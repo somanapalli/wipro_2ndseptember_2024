@@ -1,6 +1,5 @@
 package com.wipro;
 
-
 import com.wipro.entity.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,6 +7,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import java.util.Properties;
+import java.util.List;
 
 public class App {
 
@@ -15,27 +15,25 @@ public class App {
         // Load configuration and build session factory
         SessionFactory sessionFactory = buildSessionFactory();
 
-        // Open session
-        Session session = sessionFactory.openSession();
+        // Add a new student
+        addStudent(sessionFactory, "bhavna");
 
-        // Begin transaction
-        Transaction transaction = session.beginTransaction();
+        // Fetch all students
+        List<Student> students = fetchAllStudents(sessionFactory);
+        students.forEach(student -> System.out.println(student.getStid() + ": " + student.getStname()));
 
-        // Create a new Student
-        Student student = Student.builder().stname("sanket").build();
-        
-        session.persist(student);
+        // Update a student
+        updateStudentName(sessionFactory, 2, "Twinkle Madan");
 
-        // Commit the transaction
-        transaction.commit();
+        // Fetch the updated student
+        Student updatedStudent = fetchStudentById(sessionFactory, 1);
+        System.out.println("Updated Student: " + updatedStudent.getStname());
 
-        // Close the session
-        session.close();
+        // Delete a student
+        deleteStudent(sessionFactory, 1);
 
         // Close the session factory
         sessionFactory.close();
-
-        System.out.println("Student saved successfully!");
     }
 
     private static SessionFactory buildSessionFactory() {
@@ -53,9 +51,73 @@ public class App {
         properties.put("hibernate.connection.password", "root");
 
         configuration.setProperties(properties);
-        configuration.addAnnotatedClass(Student.class); // Register your Employee entity
+        configuration.addAnnotatedClass(Student.class); // Register your Student entity
 
         // Build the SessionFactory
         return configuration.buildSessionFactory();
+    }
+
+    // Method to add a new student
+    private static void addStudent(SessionFactory sessionFactory, String name) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        Student student = Student.builder().stname(name).build();
+        session.persist(student);
+
+        transaction.commit();
+        session.close();
+        System.out.println("Student saved successfully!");
+    }
+
+    // Method to fetch all students
+    private static List<Student> fetchAllStudents(SessionFactory sessionFactory) {
+        Session session = sessionFactory.openSession();
+        List<Student> students = session.createQuery("from Student", Student.class).list();
+        session.close();
+        return students;
+    }
+
+    // Method to fetch a student by ID
+    private static Student fetchStudentById(SessionFactory sessionFactory, Integer stid) {
+        Session session = sessionFactory.openSession();
+        Student student = session.get(Student.class, stid);
+        session.close();
+        return student;
+    }
+
+    // Method to update a student name by ID
+    private static void updateStudentName(SessionFactory sessionFactory, Integer stid, String newName) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        Student student = session.get(Student.class, stid);
+        if (student != null) {
+            student.setStname(newName);
+            session.merge(student); // This will update the record in the database
+            System.out.println("Student updated successfully!");
+        } else {
+            System.out.println("Student with ID " + stid + " not found.");
+        }
+
+        transaction.commit();
+        session.close();
+    }
+
+    // Method to delete a student by ID
+    private static void deleteStudent(SessionFactory sessionFactory, Integer stid) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        Student student = session.get(Student.class, stid);
+        if (student != null) {
+            session.remove(student); // This will delete the record from the database
+            System.out.println("Student deleted successfully!");
+        } else {
+            System.out.println("Student with ID " + stid + " not found.");
+        }
+
+        transaction.commit();
+        session.close();
     }
 }
