@@ -15,7 +15,7 @@ public class App {
 
         // Creating a new employee
         Employee employee = new Employee();
-        employee.setName("twinkle");
+        employee.setName("mobina");
         employee.setDepartment("IT");
         employeeDAO.saveEmployee(employee);
 
