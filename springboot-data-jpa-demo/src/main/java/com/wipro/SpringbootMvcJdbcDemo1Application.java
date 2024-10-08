@@ -4,19 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
-import com.wipro.entity.Student;
-import com.wipro.repository.StudentRepository;
+import com.wipro.entity.Department;
+import com.wipro.entity.Employee;
+import com.wipro.repository.DepartmentRepository;
 
 @SpringBootApplication
 public class SpringbootMvcJdbcDemo1Application implements CommandLineRunner{
 
+	//@Autowired
+	//private StudentRepository repository;
+	
 	@Autowired
-	private StudentRepository repository;
+	private DepartmentRepository repository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootMvcJdbcDemo1Application.class, args);
@@ -55,19 +55,33 @@ public class SpringbootMvcJdbcDemo1Application implements CommandLineRunner{
 //		}
 		//pagination and sorting
 		
-		int page = 0;
-		int size = 10;
-		String sortBy = "stname";
-		
-		Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-	
-		Page<Student> studentPage =  repository.findAll(pageable);
-	
-		System.out.println("total students: " + studentPage.getTotalElements());
-	    System.out.println("total pages: " + studentPage.getTotalPages());
+//		int page = 0;
+//		int size = 10;
+//		String sortBy = "stname";
+//		
+//		Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+//	
+//		Page<Student> studentPage =  repository.findAll(pageable);
+//	
+//		System.out.println("total students: " + studentPage.getTotalElements());
+//	    System.out.println("total pages: " + studentPage.getTotalPages());
+//	    
+//	    studentPage.getContent().forEach(student -> System.out.println("id:" + student.getStid() + " , Name: " + student.getStname()));
 	    
-	    studentPage.getContent().forEach(student -> System.out.println("id:" + student.getStid() + " , Name: " + student.getStname()));
 	    
+	     Employee e1 = Employee.builder().name("sanket").build();
+	     Employee e2 = Employee.builder().name("mobina").build();
+	     
+	     Department department = Department.builder().name("HR").build();
+	     
+	     department.getEmployees().add(e1);
+	     department.getEmployees().add(e2);
+	     
+	     repository.save(department);
+	     
+	
+	
+	
 	}
 
 }
