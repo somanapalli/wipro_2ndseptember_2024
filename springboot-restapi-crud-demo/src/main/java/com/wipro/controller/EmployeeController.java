@@ -22,26 +22,26 @@ import com.wipro.repository.EmployeeRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/employees")
+//@RequestMapping("/api/employees")
 public class EmployeeController {
 
 	@Autowired
 	  private EmployeeRepository repository;
 	  
 	
-	@PostMapping
+	@PostMapping("/api/employees")
 	public Employee createEmployee(@Valid @RequestBody Employee employee)
 	{
 		return repository.save(employee);
 	}
 	
-	@GetMapping
+	@GetMapping("/api/employees")
 	public List<Employee> getAllEmployees()
 	{
 		return repository.findAll();
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/api/employees/{id}")
 	public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") Long id) throws EmployeeNotFoundException
 	{
 		//   T get();
@@ -49,7 +49,7 @@ public class EmployeeController {
 	    return new ResponseEntity<Employee>(employee,HttpStatus.OK);
 	}
 	
-	@PutMapping("/{id}")
+	@PutMapping("/api/employees/{id}")
 	public Employee updateEmployeeById(@PathVariable("id") Long id, @Valid @RequestBody Employee employee)
 	{
 		Employee updatedEmployee = repository.findById(id).get();
@@ -60,11 +60,26 @@ public class EmployeeController {
 		return repository.save(updatedEmployee);
 	}
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/api/employees/{id}")
 	public String deleteEmployeeById(@PathVariable("id") Long id)
 	{
 		repository.deleteById(id);
 		return "employee with id " + id + " deleted successfully";
 	}
+	@GetMapping("/myaccount")
+	public String getAccount()
+	{
+		return "welcome to my account";
+	}
+	@GetMapping("/mybalance")
+	public String getBalance()
+	{
+		return " my balance is 10cr";
+	}
 	
+	@GetMapping("/home")
+	public String home()
+	{
+		return "home page";
+	}
 }
