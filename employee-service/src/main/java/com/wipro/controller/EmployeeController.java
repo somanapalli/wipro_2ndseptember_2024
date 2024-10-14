@@ -1,6 +1,8 @@
 package com.wipro.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wipro.dto.APIResponseDto;
 import com.wipro.dto.EmployeeDto;
 import com.wipro.service.EmployeeService;
 
@@ -19,15 +22,15 @@ public class EmployeeController {
 	private EmployeeService employeeService;
 	
 	@PostMapping
-	public EmployeeDto saveEmployee(@RequestBody EmployeeDto employeeDto)
+	public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody EmployeeDto employeeDto)
 	{
-		return employeeService.saveEmployee(employeeDto);
+		return new ResponseEntity<EmployeeDto>(employeeService.createEmployee(employeeDto),HttpStatus.CREATED);
 	}
 	
-	@GetMapping("{id}")
-	public EmployeeDto getEmployeeById(@PathVariable("id") Long x)
+	@GetMapping("{empid}")
+	public APIResponseDto getEmployeeById(@PathVariable("empid") Long id)
 	{
-		return employeeService.getEmployeeById(x);
+		return employeeService.getEmployeeById(id);
 	}
 	
 }

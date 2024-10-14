@@ -12,7 +12,7 @@ import com.wipro.dto.DepartmentDto;
 import com.wipro.service.DepartmentService;
 
 @RestController
-@RequestMapping("/api/department/")
+@RequestMapping("/api/department")
 public class DepartmentController {
 
 	@Autowired
@@ -24,7 +24,7 @@ public class DepartmentController {
 		return departmentService.saveDepartment(departmentDto);
 	}
 	
-	@GetMapping("{departmentCode}")
+	@GetMapping("/{departmentCode}")
 	public DepartmentDto getDepartmentByCode(@PathVariable("departmentCode") String x)
 	{
 		return departmentService.getDepartmentByCode(x);
