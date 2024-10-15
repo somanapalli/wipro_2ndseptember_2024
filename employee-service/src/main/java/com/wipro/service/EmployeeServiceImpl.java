@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.wipro.dto.APIResponseDto;
 import com.wipro.dto.DepartmentDto;
@@ -21,8 +22,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	private ModelMapper mapper;
 	
+//	@Autowired
+//	private RestTemplate restTemplate;
+	
+//	@Autowired
+//	private WebClient webClient;
+	
 	@Autowired
-	private RestTemplate restTemplate;
+	private APIClient apiClient;
 	
 	@Override
 	public EmployeeDto createEmployee(EmployeeDto empdto) {
@@ -40,20 +47,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		Employee savedEmployee = employeeRepository.findById(id).get();
 	
-		ResponseEntity<DepartmentDto> responseEntity = restTemplate.getForEntity("http://localhost:9091/api/department/" + savedEmployee.getDepartmentCode(), DepartmentDto.class);
+		/*
+		 * using RestTemplate-approach 1
+		 * ResponseEntity<DepartmentDto> responseEntity = restTemplate.getForEntity("http://localhost:9091/api/department/" + savedEmployee.getDepartmentCode(), DepartmentDto.class);
+		 
+		 *DepartmentDto departmentDto = responseEntity.getBody();
+		 *
+		 */
 		
-		DepartmentDto departmentDto = responseEntity.getBody();
+		/*
+		 * using WebClient - approach 2
+		 * DepartmentDto departmentDto = webClient.get()
+		 * .uri("http://localhost:9091/api/department/" +
+		 * savedEmployee.getDepartmentCode())
+		 * .retrieve().bodyToMono(DepartmentDto.class).block();
+		 */
 		
-		
-		/*DepartmentDto departmentDto = webClient.get()
-		.uri("http://localhost:9090/api/department/" + savedEmployee.getDepartmentCode())
-		.retrieve()
-		.bodyToMono(DepartmentDto.class)
-		.block();*/
+		DepartmentDto departmentDto =apiClient.getDepartmentByCode(savedEmployee.getDepartmentCode());
 		
 		//DepartmentDto departmentDto = apiClient.getDepartmentByCode(savedEmployee.getDepartmentCode());
 		
 		
+		//convert Employee object to dto object using Mapper
 		
 		EmployeeDto employeeDto = mapper.map(savedEmployee, EmployeeDto.class);
 	
