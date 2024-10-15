@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.wipro.dto.DepartmentDto;
 
-@FeignClient(url = "http://localhost:9091",value="DEPARTMENT-SERVICE")
+//@FeignClient(url = "http://localhost:9092",value="DEPARTMENT-SERVICE")
+@FeignClient(name="DEPARTMENT-SERVICE")
 public interface APIClient {
 	@GetMapping("api/department/{departmentCode}")
 	public DepartmentDto getDepartmentByCode(@PathVariable("departmentCode") String x);
